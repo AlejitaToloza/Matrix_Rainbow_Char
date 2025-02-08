@@ -1,0 +1,81 @@
+<!-- Proyecto realizado por Dev. Alejandra Toloza -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Effect Rainbow Character</title>
+    <style>
+        body {
+            margin: 0; /* Eliminar márgenes del cuerpo */
+            padding: 0; /* Eliminar relleno del cuerpo */
+            background-color: black; /* Fondo negro para el efecto */
+            overflow: hidden; /* Ocultar el desbordamiento */
+        }
+
+        #myCanvas {
+            position: absolute; /* Asegurar que el canvas esté en la parte superior */
+            top: 0; /* Alineación en la parte superior */
+            left: 0; /* Alineación a la izquierda */
+            width: 100%; /* El canvas ocupa el 100% del ancho */
+            height: 100%; /* El canvas ocupa el 100% de la altura */
+        }
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas"></canvas>
+
+    <script>
+        // Obtener el canvas y el contexto de dibujo
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Ajustar el tamaño del canvas al tamaño de la ventana
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Tamaño de la fuente y número de columnas
+        const fontSize = 20; // Tamaño de la fuente original
+        const columns = Math.floor(canvas.width / fontSize); // Número de columnas basado en el ancho del canvas
+        const drops = Array(columns).fill(1); // Inicializar las posiciones de las gotas
+
+        // Colores del arcoíris
+        const rainbowColors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#4B0082', '#9400D3'];
+
+        // Función para dibujar el efecto Matrix
+        function drawMatrix() {
+            // Fondo negro con transparencia para crear el efecto de desvanecimiento
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Establecer el tamaño de la fuente
+            ctx.font = `${fontSize}px monospace`; // Usar monospace para un mejor efecto
+
+            // Dibujar los caracteres en cada columna
+            for (let i = 0; i < drops.length; i++) {
+                const text = String.fromCharCode(Math.floor(Math.random() * 122) + 33); // Generar un carácter aleatorio
+                const x = i * fontSize; // Posición horizontal de la columna
+                const y = drops[i] * fontSize; // Posición vertical de la gota
+
+                // Cambiar el color del carácter basado en el tiempo
+                const colorIndex = Math.floor((Date.now() / 100 + i * 10) % rainbowColors.length);
+                ctx.fillStyle = rainbowColors[colorIndex]; // Establecer el color del carácter
+
+                ctx.fillText(text, x, y); // Dibujar el carácter en el canvas
+
+                // Reiniciar la posición de la gota aleatoriamente
+                if (y > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0; // Reiniciar la gota al inicio
+                }
+
+                // Incrementar la posición de la gota
+                drops[i]++; // Mover la gota hacia abajo
+            }
+        }
+
+        // Ejecutar la función drawMatrix a intervalos regulares
+        setInterval(drawMatrix, 100); // Llamar a la función cada 100 ms
+    </script>
+</body>
+</html>
